@@ -1,30 +1,37 @@
-import { Component, createRef } from 'react';
+import { createRef } from 'react';
 import { FiCheckSquare } from 'react-icons/fi';
 
 import { Form } from './styles';
 import Modal from '../Modal';
 import Input from '../Input';
+import { FormHandles } from '@unform/core';
 
-class ModalAddFood extends Component {
-  constructor(props) {
-    super(props);
+interface Data {
+  id: number,
+  name: string,
+  description: string,
+  price: number,
+  available: boolean,
+  image: string
+}
 
-    this.formRef = createRef();
-  }
+interface ModalAddFoodProps {
+  setIsOpen: () => void,
+  handleAddFood: (data: Data) => Promise<void>,
+  isOpen: boolean
+}
 
-  handleSubmit = async data => {
-    const { setIsOpen, handleAddFood } = this.props;
+function ModalAddFood ({ setIsOpen, handleAddFood, isOpen }: ModalAddFoodProps) {
+  const formRef = createRef<FormHandles>()
 
-    handleAddFood(data);
-    setIsOpen();
-  };
-
-  render() {
-    const { isOpen, setIsOpen } = this.props;
+    const handleSubmit = async (data: Data) => {
+      handleAddFood(data);
+      setIsOpen();
+    }
 
     return (
       <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-        <Form ref={this.formRef} onSubmit={this.handleSubmit}>
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <h1>Novo Prato</h1>
           <Input name="image" placeholder="Cole o link aqui" />
 
@@ -41,7 +48,6 @@ class ModalAddFood extends Component {
         </Form>
       </Modal>
     );
-  }
 };
 
 export default ModalAddFood;
